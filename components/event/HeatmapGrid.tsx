@@ -73,20 +73,30 @@ export default function HeatmapGrid({ slots, heatmap }: HeatmapGridProps) {
                   {dateSlots.map((slot) => {
                     const slotData = heatmap[slot.key];
                     const count = slotData?.count || 0;
-                    const colorClass = getHeatmapColor(count, maxCount);
+                    const colors = getHeatmapColor(count, maxCount);
 
                     return (
                       <div
                         key={slot.key}
                         className={cn(
-                          "h-8 border-b border-gray-200 last:border-b-0 transition-colors flex items-center justify-center text-xs font-medium",
-                          colorClass,
+                          "h-8 border-b border-gray-200 last:border-b-0 transition-all duration-150 flex items-center justify-center text-xs font-medium",
                           count > 0 && "cursor-pointer"
                         )}
-                        onMouseEnter={(e) =>
-                          count > 0 && handleMouseEnter(slot.key, e)
-                        }
-                        onMouseLeave={handleMouseLeave}
+                        style={{
+                          backgroundColor: colors.backgroundColor,
+                          color: colors.textColor,
+                          ['--hover-bg' as any]: colors.hoverColor,
+                        }}
+                        onMouseEnter={(e) => {
+                          if (count > 0) {
+                            e.currentTarget.style.backgroundColor = colors.hoverColor;
+                            handleMouseEnter(slot.key, e);
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = colors.backgroundColor;
+                          handleMouseLeave();
+                        }}
                       >
                         {count > 0 && count}
                       </div>
@@ -124,19 +134,19 @@ export default function HeatmapGrid({ slots, heatmap }: HeatmapGridProps) {
       <div className="mt-4 flex items-center gap-4 text-sm">
         <span className="text-gray-600 font-medium">Availability:</span>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-gray-100 border border-gray-300 rounded" />
+          <div className="w-6 h-6 border border-gray-300 rounded" style={{ backgroundColor: '#f3f4f6' }} />
           <span className="text-gray-600 text-xs">0</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-green-200 rounded" />
+          <div className="w-6 h-6 rounded" style={{ backgroundColor: '#bbf7d0' }} />
           <span className="text-gray-600 text-xs">Low</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-green-400 rounded" />
+          <div className="w-6 h-6 rounded" style={{ backgroundColor: '#4ade80' }} />
           <span className="text-gray-600 text-xs">Medium</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-green-600 rounded" />
+          <div className="w-6 h-6 rounded" style={{ backgroundColor: '#16a34a' }} />
           <span className="text-gray-600 text-xs">High</span>
         </div>
       </div>
