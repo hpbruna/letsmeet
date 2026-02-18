@@ -5,7 +5,7 @@ import { generateUniqueSlug } from '@/lib/utils/slug-generator';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, description, startDate, endDate, startTime, endTime } = body;
+    const { title, description, startDate, endDate, startTime, endTime, timezone } = body;
 
     // Validate required fields
     if (!title || !startDate || !endDate || !startTime || !endTime) {
@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
         end_date: endDate,
         start_time: startTime,
         end_time: endTime,
+        timezone: timezone || 'UTC',
       })
       .select()
       .single();

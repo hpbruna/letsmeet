@@ -11,6 +11,7 @@ export interface Database {
           end_date: string;
           start_time: string;
           end_time: string;
+          timezone: string;
           created_at: string;
           updated_at: string;
         };
@@ -23,6 +24,7 @@ export interface Database {
           end_date: string;
           start_time: string;
           end_time: string;
+          timezone?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -35,6 +37,7 @@ export interface Database {
           end_date?: string;
           start_time?: string;
           end_time?: string;
+          timezone?: string;
           created_at?: string;
           updated_at?: string;
         };

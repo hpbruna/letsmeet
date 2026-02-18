@@ -57,6 +57,7 @@ export default function CreateEventForm() {
       }
 
       // Create event
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
@@ -69,6 +70,7 @@ export default function CreateEventForm() {
           endDate,
           startTime,
           endTime,
+          timezone,
         }),
       });
 

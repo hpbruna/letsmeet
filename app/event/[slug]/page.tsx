@@ -58,7 +58,8 @@ export default async function EventPage({ params }: EventPageProps) {
     new Date(event.start_date),
     new Date(event.end_date),
     event.start_time,
-    event.end_time
+    event.end_time,
+    event.timezone
   );
 
   // Calculate heatmap data

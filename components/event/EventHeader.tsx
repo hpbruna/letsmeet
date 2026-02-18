@@ -4,6 +4,7 @@ import { Event } from "@/lib/supabase/types";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/use-toast";
 import { Share2, Calendar } from "lucide-react";
+import { toUtcFromZoned } from "@/lib/utils/time-slots";
 
 interface EventHeaderProps {
   event: Event;
@@ -54,24 +55,28 @@ export default function EventHeader({ event }: EventHeaderProps) {
   };
 
   const formatTimeRange = () => {
-    const [startHour, startMinute] = event.start_time.split(":");
-    const [endHour, endMinute] = event.end_time.split(":");
+    const eventTimezone = event.timezone || "UTC";
+    const dateStr = event.start_date;
 
-    const startTime = new Date();
-    startTime.setHours(parseInt(startHour), parseInt(startMinute));
+    const startUtc = toUtcFromZoned(dateStr, event.start_time, eventTimezone);
+    const endUtc = toUtcFromZoned(dateStr, event.end_time, eventTimezone);
 
-    const endTime = new Date();
-    endTime.setHours(parseInt(endHour), parseInt(endMinute));
-
-    return `${startTime.toLocaleTimeString("en-US", {
+    const timeOpts: Intl.DateTimeFormatOptions = {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
-    })} - ${endTime.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    })}`;
+    };
+
+    const viewerTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tzAbbr =
+      new Intl.DateTimeFormat("en-US", {
+        timeZoneName: "short",
+        timeZone: viewerTz,
+      })
+        .formatToParts(startUtc)
+        .find((p) => p.type === "timeZoneName")?.value ?? viewerTz;
+
+    return `${startUtc.toLocaleTimeString("en-US", timeOpts)} - ${endUtc.toLocaleTimeString("en-US", timeOpts)} ${tzAbbr}`;
   };
 
   return (
